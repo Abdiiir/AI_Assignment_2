@@ -175,15 +175,15 @@ def distributeAndOverOr(sentence):
 # This function applies the previous functions to convert
 # the sentence to CNF
 def convertToCNF(sentence):
-    print(sentence)
+    # print(sentence)
     sentence = eliminateBiconditional(sentence)
-    print(sentence)
+    # print(sentence)
     sentence = eliminateImplication(sentence)
-    print(sentence)
+    # print(sentence)
     sentence = deMorgan(sentence)
-    print(sentence)
+    # print(sentence)
     sentence = distributeAndOverOr(sentence)
-    print(sentence)
+    # print(sentence)
     return sentence
 
 
