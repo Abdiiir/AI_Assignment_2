@@ -66,16 +66,6 @@ class Clause:
         result.negatives.extend(c2.negatives)
         return result
 
-    def negate_clause(c):
-        negated = []
-        for s in c.positives:
-            negated_clause = Clause('~' + s)
-            negated.append(negated_clause)
-        for s in c.negatives:
-            negated_clause = Clause(s)
-            negated.append(negated_clause)
-        return negated
-
     def resolve(c1, c2):
         c1_2 = Clause.copy(c1)
         c2_2 = Clause.copy(c2)
