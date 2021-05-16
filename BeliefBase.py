@@ -24,71 +24,46 @@ class Clause:
         return (str("positives: ") + str(self.positves) + str("\nnegatives: ") + str(self.negatives) + "\n")
 
     def __eq__(self, other):
-        if len(self.positves) != len(other.positves) or len(self.negatives) != len(other.negatives):
+        if len(self.positves) != len(other.positves) or len(self.negatives) != len(other.negatives) or set(self.positves) != set(other.positves) and set(self.negatives) != set(other.negatives):
             return False
-        # ensure each positive symbol has a match
-        for symbol1 in self.positves:
-            match = False
-            for symbol2 in other.positves:
-                if symbol1 == symbol2:
-                    match = True
-                    break
-            if not(match):
-                return False
-        # ensure each negative symbol has a match
-        for symbol1 in self.negatives:
-            match = False
-            for symbol2 in other.negatives:
-                if symbol1 == symbol2:
-                    match = True
-                    break
-            if not(match):
-                return False
         return True
 
-    def copy(c):
+    def clause_copy(c):
         result = Clause()
-        for symbol in c.positves:
-            result.positves.append(symbol)
-        for symbol in c.negatives:
-            result.negatives.append(symbol)
+        result.positves.extend(c.positves)
+        result.negatives.extend(c.negatives)
         return result
 
-    def del_positive_symbol(self, s):
+    def delete_pos(self, s):
         self.positves.remove(s)
 
-    def del_negative_symbol(self, s):
+    def delete_neg(self, s):
         self.negatives.remove(s)
 
     def combine_clauses(c1, c2):
-        result = Clause()
-        result.positves.extend(c1.positves)
-        result.positves.extend(c2.positves)
-        result.negatives.extend(c1.negatives)
-        result.negatives.extend(c2.negatives)
-        return result
+        CombinedClause = Clause()
+        CombinedClause.positves.extend(c1.positves+c2.positves)
+        CombinedClause.negatives.extend(c1.negatives+c2.negatives)
+        return CombinedClause
 
     def resolve(c1, c2):
-        c1_2 = Clause.copy(c1)
-        c2_2 = Clause.copy(c2)
+        #Copy to not alter the original clause
+        c1_2 = Clause.clause_copy(c1)
+        c2_2 = Clause.clause_copy(c2)
         for s1 in c1_2.positves:
-            for s2 in c2_2.negatives:
-                if s1 == s2 and s1 in c1_2.positves:
-                    c1_2.del_positive_symbol(s1)
-                    c2_2.del_negative_symbol(s2)
+            if s1 in c2_2.negatives:
+                c1_2.delete_pos(s1)
+                c2_2.delete_neg(s1)
         for s1 in c1_2.negatives:
-            for s2 in c2_2.positves:
-                if s1 == s2 and s2 in c2_2.positves:
-                    c1_2.del_negative_symbol(s1)
-                    c2_2.del_positive_symbol(s2)
+            if s1 in c2_2.positves:
+                c1_2.delete_neg(s1)
+                c2_2.delete_pos(s1)
         for s1 in c1_2.positves:
-            for s2 in c2_2.positves:
-                if s1 == s2 and s1 in c1_2.positves:
-                    c2_2.del_positive_symbol(s2)
+            if s1 in c2_2.positves:
+                c2_2.delete_pos(s1)
         for s1 in c1_2.negatives:
-            for s2 in c2_2.negatives:
-                if s1 == s2 and s1 in c1_2.negatives:
-                    c2_2.del_negative_symbol(s2)
+            if s1 in c2_2.negatives:
+                c2_2.delete_neg(s1)
         result = Clause.combine_clauses(c1_2, c2_2)
         return result
 
@@ -194,7 +169,7 @@ class BeliefBase:
 
 # n1 = Belief("(~a|b)&(~b|a)&((a|~c)&(b|~c))", negate_belief=False)
 n1 = Belief("(p)", negate_belief=False)
-n2 = Belief("(q)", negate_belief=False)
+n2 = Belief("(p)", negate_belief=False)
 # n2 = Belief("(a<->b)&(c->(a&b))&a", negate_belief=False)
 # n3 = Belief("a&(b->c)&((a|a<->b)|((a->b))<->(c->d))", negate_belief=False)
 bb = BeliefBase()
