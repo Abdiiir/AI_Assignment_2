@@ -1,6 +1,6 @@
 from convertToCnf import convertToCNF
 from sympy.logic.boolalg import to_cnf
-from sympy.logic.boolalg import is_cnf
+
 
 # Clauses for every belief, the class counts all negations as negatives
 class Clause:
@@ -8,12 +8,12 @@ class Clause:
         self.positves = []
         self.negatives = []
         while c:
-            print(c[0])
+            print(c)
             if c[0] == "(" or c[0] == ")" or c[0] == "|":
                 c = c[1:]
                 continue
             elif c[0] == "~":
-                print("!")
+                print("-----------")
                 self.negatives.append(c[1])
                 c = c[2:]
             else:
@@ -26,21 +26,23 @@ class Clause:
     def __eq__(self, other):
         if len(self.positves) != len(other.positves) or len(self.negatives) != len(other.negatives):
             return False
-        for symbol1 in self.positves:  # ensure each positive symbol has a match
+        # ensure each positive symbol has a match
+        for symbol1 in self.positves:
             match = False
             for symbol2 in other.positves:
                 if symbol1 == symbol2:
                     match = True
                     break
-            if match == False:
+            if not(match):
                 return False
-        for symbol1 in self.negatives:  # ensure each negative symbol has a match
+        # ensure each negative symbol has a match
+        for symbol1 in self.negatives:
             match = False
             for symbol2 in other.negatives:
                 if symbol1 == symbol2:
                     match = True
                     break
-            if match == False:
+            if not(match):
                 return False
         return True
 
@@ -98,35 +100,36 @@ class Belief:
         self.clauses = []
         self.cnf3 = cnf
         cnf = convertToCNF(cnf)
-        if negate_belief == False:
-            print(is_cnf(cnf))
-            #cnf = convertToCNF(cnf)
-            print(cnf)
+        print(cnf)
+        if not(negate_belief):
             for i in range(cnf.count("&") + 1):
-                print(1)
-                temp_cnf = cnf[:cnf.find("&")]
+                if cnf.find("&") != -1:
+                    temp_cnf = cnf[:cnf.find("&")]
+                else:
+                    temp_cnf = cnf
                 cnf = cnf[cnf.find("&") + 1:]
-                print("temp", temp_cnf)
-                print("cnf", cnf)
                 c = Clause(temp_cnf)
                 self.clauses.append(c)
         else:
+            print("ELSE")
             cnf2 = "~(" + cnf + ")"
-            cnf5 = to_cnf(cnf2,True)
             cnf2 = str(to_cnf(cnf2))
-            print(cnf5)
-            print(is_cnf(cnf2))
             print(cnf2)
             for i in range(cnf2.count("&") + 1):
-                print(1)
-                temp_cnf = cnf2[:cnf2.find("&")]
+                print(i)
+                print(cnf2.find("&"))
+                if cnf2.find("&") != -1:
+                    temp_cnf = cnf2[:cnf2.find("&")]
+                else:
+                    temp_cnf = cnf2
+                print(temp_cnf)
                 cnf2 = cnf2[cnf2.find("&") + 1:]
-                print("temp", temp_cnf)
-                print("cnf", cnf2)
+                # print("temp", temp_cnf)
+                # print("cnf", cnf2)
                 c = Clause(temp_cnf)
-                print(c.negatives,c.positves)
-
+                # print(c.negatives, c.positves)
                 self.clauses.append(c)
+        print("done0")
 
     def __str__(self):
         out = '{'
@@ -145,8 +148,10 @@ class BeliefBase:
         self.beliefs.append(bel)
 
     def LogicalEntailment(self, belief):
-        negated_belief = Belief(belief.cnf3, True)  # create negation of the belief
-
+        # create negation of the belief
+        print(belief.cnf3)
+        negated_belief = Belief(belief.cnf3, True)
+        print("done1")
         BaseClauses = []
         resolved_clauses = []
         BaseClauses.extend(negated_belief.clauses)
@@ -173,9 +178,6 @@ class BeliefBase:
         print("FAKE NEWS")
         return False
 
-    def add(self, object):
-        self.beliefs.append(object)
-
     def delete(self, bel):
         for b in self.beliefs:
             self.beliefs.remove(bel)
@@ -190,12 +192,14 @@ class BeliefBase:
         return out[:len(out) - 2] + '}'
 
 
-# n1 = Belief("(~a|b)&(~b|a)&((a|~c)&(b|~c))")
-n2 = Belief("(a<->b)&(c->(a&b))", negate_belief=False)
-# n3 = Belief("a&(b->c)&((a|a<->b)|((a->b))<->(c->d))")
+# n1 = Belief("(~a|b)&(~b|a)&((a|~c)&(b|~c))", negate_belief=False)
+n1 = Belief("(p)", negate_belief=False)
+n2 = Belief("(q)", negate_belief=False)
+# n2 = Belief("(a<->b)&(c->(a&b))&a", negate_belief=False)
+# n3 = Belief("a&(b->c)&((a|a<->b)|((a->b))<->(c->d))", negate_belief=False)
 bb = BeliefBase()
-# bb.add(n1)
-bb.add(n2)
+bb.add(n1)
+# bb.add(n2)
 bb.LogicalEntailment(n2)
-# bb.add(n3)
+
 print(bb)
