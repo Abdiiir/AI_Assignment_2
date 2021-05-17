@@ -105,7 +105,7 @@ class Belief:
         else:
             print("ELSE")
             cnf2 = "~(" + cnf + ")"
-            cnf2 = convertToCNF(cnf)
+            cnf2 = convertToCNF(cnf2)
             print(cnf2)
             for i in range(cnf.count("&") + 1):
                 print(i)
