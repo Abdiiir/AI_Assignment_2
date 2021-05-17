@@ -4,7 +4,7 @@ from queue import Queue
 
 
 class IQueue(Queue):
-    
+
     def to_list(self):
         """
          Queue to list.
@@ -18,19 +18,17 @@ class IQueue(Queue):
         """
         with self.mutex:
             return item in self.queue
-        
+
 # Clauses for every belief, the class counts all negations as negatives
 class Clause:
     def __init__(self, c=""):
         self.positves = []
         self.negatives = []
         while c:
-            print(c)
             if c[0] == "(" or c[0] == ")" or c[0] == "|":
                 c = c[1:]
                 continue
             elif c[0] == "~":
-                print("-----------")
                 self.negatives.append(c[1])
                 c = c[2:]
             else:
@@ -170,15 +168,11 @@ class BeliefBase:
     def delete(self, bel):
         for belief in self.beliefs:
             same_belief = True
-        for c1,c2 in zip(belief.clauses,bel.clauses):
+        for c1, c2 in zip(belief.clauses, bel.clauses):
             if c1 != c2:
                 same_belief = False
         if same_belief:
             self.beliefs.remove(belief)
-        
-        # HUH???? 
-        #for b in self.beliefs:
-        #    self.beliefs.remove(bel)
 
     def clear(self):
         self.beliefs = []
@@ -188,7 +182,6 @@ class BeliefBase:
         for ele in self.beliefs:
             out = out + str(ele) + ', '
         return out[:len(out) - 2] + '}'
-
 
     def contract(self, b, mode):
         remainders = self.remainders(b)
@@ -204,7 +197,7 @@ class BeliefBase:
         remainders = []
         max = 0
         while True:
-        
+
             if frontier.empty():
       #          print("remainders")
       #          print(remainders)
@@ -223,7 +216,7 @@ class BeliefBase:
                 n_copy.delete(belief)
                 if n_copy not in frontier and n_copy not in expanded and max == 0:
                     frontier.put(n_copy)
-                    
+
     def fullMeet(beliefBases):
         b_2 = BeliefBase()
         if len(beliefBases) > 0:
@@ -234,13 +227,11 @@ class BeliefBase:
                 for belief1 in start_b.beliefs:
                     for belief2 in bb.beliefs:
                         if belief1 == belief2:
-                            b_2.add_belief(belief1)    
+                            b_2.add_belief(belief1)
         return b_2
 
 
-
-
-#n1 = Belief("(~a|b)&(~b|a)&((a|~c)&(b|~c))", negate_belief=False)
+# n1 = Belief("(~a|b)&(~b|a)&((a|~c)&(b|~c))", negate_belief=False)
 n1 = Belief("(p -> q)", negate_belief=False)
 n2 = Belief("(p -> w)", negate_belief=False)
 n3 = Belief("(w -> q)", negate_belief=False)
