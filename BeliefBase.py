@@ -1,5 +1,4 @@
 from convertToCnf import convertToCNF
-from sympy.logic.boolalg import to_cnf
 from copy import deepcopy as deepcopy
 from queue import Queue
 
@@ -105,22 +104,18 @@ class Belief:
                 self.clauses.append(c)
         else:
             print("ELSE")
-            cnf2 = "~(" + cnf + ")"
-            cnf2 = str(to_cnf(cnf2))
+            cnf2 = convertToCNF(cnf)
             print(cnf2)
-            for i in range(cnf2.count("&") + 1):
+            for i in range(cnf.count("&") + 1):
                 print(i)
-                print(cnf2.find("&"))
-                if cnf2.find("&") != -1:
-                    temp_cnf = cnf2[:cnf2.find("&")]
+                print(cnf.find("&"))
+                if cnf.find("&") != -1:
+                    temp_cnf = cnf[:cnf.find("&")]
                 else:
-                    temp_cnf = cnf2
+                    temp_cnf = cnf
                 print(temp_cnf)
-                cnf2 = cnf2[cnf2.find("&") + 1:]
-                # print("temp", temp_cnf)
-                # print("cnf", cnf2)
+                cnf = cnf[cnf.find("&") + 1:]
                 c = Clause(temp_cnf)
-                # print(c.negatives, c.positves)
                 self.clauses.append(c)
         print("done0")
 
@@ -243,8 +238,9 @@ class BeliefBase:
 
 
 
-# n1 = Belief("(~a|b)&(~b|a)&((a|~c)&(b|~c))", negate_belief=False)
-n1 = Belief("(p -> q)", negate_belief=False)
+
+#n1 = Belief("(~a|b)&(~b|a)&((a|~c)&(b|~c))", negate_belief=False)
+n1 = Belief("~(p -> q)", negate_belief=True)
 n2 = Belief("(p -> w)", negate_belief=False)
 n3 = Belief("(w -> q)", negate_belief=False)
 # n2 = Belief("(a<->b)&(c->(a&b))&a", negate_belief=False)
