@@ -241,7 +241,7 @@ class BeliefBase:
 
 
 #n1 = Belief("(~a|b)&(~b|a)&((a|~c)&(b|~c))", negate_belief=False)
-n1 = Belief("~(p -> q)", negate_belief=True)
+n1 = Belief("(p -> q)", negate_belief=False)
 n2 = Belief("(p -> w)", negate_belief=False)
 n3 = Belief("(w -> q)", negate_belief=False)
 # n2 = Belief("(a<->b)&(c->(a&b))&a", negate_belief=False)

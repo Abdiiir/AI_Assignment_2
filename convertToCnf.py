@@ -187,7 +187,7 @@ def convertToCNF(sentence):
     #print(sentence)
     # Now we have converted it to CNF, we will now use
     # Sympy's cnf converter to simplify the expression
-    sentence = str(to_cnf(sentence, True, True))
+    sentence = str(to_cnf(sentence, True))
     #print(sentence)
     return sentence
     
