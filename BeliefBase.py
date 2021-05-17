@@ -104,6 +104,7 @@ class Belief:
                 self.clauses.append(c)
         else:
             print("ELSE")
+            cnf2 = "~(" + cnf + ")"
             cnf2 = convertToCNF(cnf)
             print(cnf2)
             for i in range(cnf.count("&") + 1):
