@@ -19,13 +19,14 @@ class IQueue(Queue):
         with self.mutex:
             return item in self.queue
 
+
 # Clauses for every belief, the class counts all negations as negatives
 class Clause:
     def __init__(self, c=""):
         self.positves = []
         self.negatives = []
         while c:
-            if c[0] == "(" or c[0] == ")" or c[0] == "|":
+            if c[0] == "(" or c[0] == ")" or c[0] == "|" or c[0] == " ":
                 c = c[1:]
                 continue
             elif c[0] == "~":
@@ -36,7 +37,7 @@ class Clause:
                 c = c[1:]
 
     def __str__(self):
-        return (str("positives: ") + str(self.positves) + str("\nnegatives: ") + str(self.negatives) + "\n")
+        return (str("\npositives: ") + str(self.positves) + str("\nnegatives: ") + str(self.negatives) + "\n")
 
     def __eq__(self, other):
         if len(self.positves) != len(other.positves) or len(self.negatives) != len(other.negatives) or set(self.positves) != set(other.positves) and set(self.negatives) != set(other.negatives):
@@ -119,10 +120,10 @@ class Belief:
         print("done0")
 
     def __str__(self):
-        out = '{'
-        for ele in self.clauses:
-            out = out + str(ele) + ', '
-        return out[:len(out) - 2] + '}'
+        s = '['
+        for e in self.clauses:
+            s = s + str(e) + ', '
+        return s[:len(s) - 2] + ']'
 
 
 # Belief base class has an array with all beliefs
@@ -178,10 +179,10 @@ class BeliefBase:
         self.beliefs = []
 
     def __str__(self):
-        out = '{'
-        for ele in self.beliefs:
-            out = out + str(ele) + ', '
-        return out[:len(out) - 2] + '}'
+        s = '['
+        for e in self.beliefs:
+            s = s + str(e) + ', '
+        return s[:len(s) - 2] + ']'
 
     def contract(self, b, mode):
         remainders = self.remainders(b)
